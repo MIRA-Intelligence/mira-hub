@@ -1,0 +1,19 @@
+{
+  "name": "mira-hub",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Builder + Next.js site that publishes the MIRA skill registry to GitHub Pages.",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build:registry": "npm run -w @mirahub/builder build --",
+    "check:registry": "npm run -w @mirahub/builder check --",
+    "vendor:upstream": "npm run -w @mirahub/builder vendor --",
+    "build:web": "npm run -w @mirahub/web build",
+    "build": "npm run build:registry && npm run build:web",
+    "dev": "npm run -w @mirahub/web dev",
+    "start": "npm run -w @mirahub/web start",
+    "lint": "npm run -w @mirahub/web lint"
+  }
+}

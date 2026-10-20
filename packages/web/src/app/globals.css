@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #fafafa;
+  --color-fg: #111111;
+  --color-muted: #6b7280;
+  --color-card: #ffffff;
+  --color-border: #e5e7eb;
+  --color-accent: #2563eb;
+  --color-accent-fg: #ffffff;
+  --color-chip-bg: #f3f4f6;
+  --color-chip-fg: #374151;
+}
+
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-bg: #0a0a0a;
+    --color-fg: #f5f5f5;
+    --color-muted: #9ca3af;
+    --color-card: #131313;
+    --color-border: #262626;
+    --color-accent: #60a5fa;
+    --color-accent-fg: #0a0a0a;
+    --color-chip-bg: #1f1f1f;
+    --color-chip-fg: #d4d4d8;
+  }
+}
+
+html, body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+a {
+  color: inherit;
+}
+
+.prose-mirahub h1 { font-size: 1.5rem; font-weight: 700; margin: 1.5rem 0 .75rem; }
+.prose-mirahub h2 { font-size: 1.25rem; font-weight: 600; margin: 1.25rem 0 .5rem; }
+.prose-mirahub h3 { font-size: 1.1rem;  font-weight: 600; margin: 1rem 0 .5rem; }
+.prose-mirahub p  { margin: .5rem 0; line-height: 1.65; }
+.prose-mirahub ul { list-style: disc; padding-left: 1.25rem; margin: .5rem 0; }
+.prose-mirahub ol { list-style: decimal; padding-left: 1.25rem; margin: .5rem 0; }
+.prose-mirahub li { margin: .25rem 0; }
+.prose-mirahub code { background: var(--color-chip-bg); padding: .1rem .35rem; border-radius: .25rem; font-size: .9em; }
+.prose-mirahub pre  { background: var(--color-chip-bg); padding: .75rem 1rem; border-radius: .5rem; overflow-x: auto; font-size: .85em; line-height: 1.5; }
+.prose-mirahub pre code { background: transparent; padding: 0; }
+.prose-mirahub a { color: var(--color-accent); text-decoration: underline; }
+.prose-mirahub blockquote { border-left: 3px solid var(--color-border); padding-left: .75rem; color: var(--color-muted); margin: .75rem 0; }
+.prose-mirahub table { width: 100%; border-collapse: collapse; margin: .75rem 0; font-size: .9em; }
+.prose-mirahub th, .prose-mirahub td { border: 1px solid var(--color-border); padding: .35rem .65rem; text-align: left; }

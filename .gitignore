@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+.cache/
+*.log
+
+# build outputs
+packages/web/.next/
+packages/web/out/
+packages/web/public/registry/
+packages/builder/dist/

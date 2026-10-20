@@ -1,0 +1,61 @@
+# Curated facet config. Tag namespaces listed here become filter groups in
+# the hub UI. Anything not listed (e.g. `dicom`, `texture`, `lang:python`)
+# stays searchable but doesn't render as a filter checkbox.
+
+defaults:
+  domain: general
+
+facets:
+  - id: domain
+    namespace: domain
+    label:
+      en: Domain
+      zh: 领域
+    values:
+      - id: radiology
+        label: { en: "Radiology / Imaging",   zh: "影像 / 放射" }
+      - id: pathology
+        label: { en: "Pathology",             zh: "病理" }
+      - id: genomics
+        label: { en: "Genomics & Bioinfo",    zh: "基因组 / 生信" }
+      - id: clinical
+        label: { en: "Clinical & EHR",        zh: "临床 / EHR" }
+      - id: pharma
+        label: { en: "Pharma & Drug",         zh: "药学 / 药物" }
+      - id: neuroscience
+        label: { en: "Neuroscience",          zh: "神经科学" }
+      - id: bio
+        label: { en: "General Bio / Wet-lab", zh: "生物 / 湿实验" }
+      - id: epidemiology
+        label: { en: "Public Health & Epi",   zh: "公卫 / 流病" }
+      - id: software
+        label: { en: "Software Engineering",  zh: "软件工程" }
+      - id: general
+        label: { en: "General",               zh: "通用" }
+
+  - id: functionality
+    namespace: functionality
+    label:
+      en: Functionality
+      zh: 功能
+    values:
+      - id: search
+        label: { en: "Search & Literature",   zh: "检索 / 文献" }
+      - id: data
+        label: { en: "Data Handling",         zh: "数据处理" }
+      - id: analysis
+        label: { en: "Analysis & Stats",      zh: "分析 / 统计" }
+      - id: modeling
+        label: { en: "ML & Modeling",         zh: "机器学习 / 建模" }
+      - id: visualization
+        label: { en: "Visualization",         zh: "可视化" }
+      - id: writing
+        label: { en: "Writing & Reporting",   zh: "写作 / 汇报" }
+      - id: documents
+        label: { en: "Document Processing",   zh: "文档处理" }
+      - id: coding
+        label: { en: "Coding & Testing",      zh: "编程 / 测试" }
+      - id: automation
+        label: { en: "Automation & Lab Ops",  zh: "自动化 / 实验运营" }
+      - id: integration
+        label: { en: "Integration & Tools",   zh: "集成 / 工具" }
