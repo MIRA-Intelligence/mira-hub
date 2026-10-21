@@ -16,10 +16,12 @@ export function InstallActions({ detail }: { detail: SkillDetail }) {
   const [desktopState, setDesktopState] = useState<DesktopState>('idle');
   const manualRef = useRef<HTMLTextAreaElement | null>(null);
   const lang = useLang();
+  // MIRA's built-in mira-hub skill installs from the page URL in one hub_install call.
+  const pageUrl = detail.zipAbsoluteUrl.replace(/registry\/skills\/[^/]+$/, `skills/${detail.slug}/`);
   const installPrompt =
     lang === 'zh'
-      ? `从 MIRA Hub 安装技能“${detail.slug}” v${detail.version}（${detail.zipAbsoluteUrl}）。`
-      : `Install the "${detail.slug}" skill v${detail.version} from MIRA Hub (${detail.zipAbsoluteUrl}).`;
+      ? `从 MIRA Hub 安装技能“${detail.slug}”：${pageUrl}`
+      : `Install the "${detail.slug}" skill from MIRA Hub: ${pageUrl}`;
 
   const handleInstallDesktop = () => {
     setDesktopState('launching');
