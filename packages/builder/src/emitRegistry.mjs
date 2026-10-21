@@ -77,6 +77,7 @@ export async function emitRegistry(records, { outDir, basePath, baseUrl }) {
       name: r.skill.name,
       version: r.mirahub.version,
       description: r.description,
+      descriptions: r.descriptions,
       maturity: r.mirahub.maturity ?? 'experimental',
       license: r.mirahub.license ?? null,
       author: r.mirahub.author ?? null,

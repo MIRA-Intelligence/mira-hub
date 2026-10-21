@@ -11,7 +11,10 @@ export interface SkillSummary {
   slug: string;
   name: string;
   version: string;
+  /** SKILL.md frontmatter description, verbatim. */
   description: string;
+  /** Hub abstract per site language. */
+  descriptions: { en: string; zh: string };
   maturity: Maturity;
   license: string | null;
   author: Author | null;

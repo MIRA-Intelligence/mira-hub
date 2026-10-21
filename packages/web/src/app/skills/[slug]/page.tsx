@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getRegistry, getSkillDetail } from '@/lib/registry';
 import { TagChip } from '@/components/TagChip';
+import { L, T } from '@/components/T';
 import { InstallActions } from './InstallActions';
 import { SkillReadme } from './SkillReadme';
 
@@ -37,7 +38,7 @@ export default async function SkillDetailPage({
     <article className="mx-auto max-w-6xl px-5 py-8">
       <nav className="text-sm text-[var(--color-muted)] mb-4">
         <Link href="/skills/" className="hover:text-[var(--color-accent)]">
-          Skills
+          <T k="nav.skills" />
         </Link>
         <span className="mx-1.5">/</span>
         <span>{detail.name}</span>
@@ -47,7 +48,9 @@ export default async function SkillDetailPage({
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
             <h1 className="text-3xl font-semibold tracking-tight">{detail.name}</h1>
-            <p className="text-[var(--color-muted)] mt-1 max-w-2xl">{detail.description}</p>
+            <p className="text-[var(--color-muted)] mt-1 max-w-2xl">
+              <L text={detail.descriptions} />
+            </p>
           </div>
           <div className="flex flex-wrap gap-1.5 max-w-md justify-end">
             {detail.tags.map((t) => (
@@ -88,12 +91,12 @@ function SidebarMeta({ detail }: { detail: ReturnType<typeof getSkillDetail> }) 
   if (!detail) return null;
   return (
     <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-4 text-sm space-y-2">
-      <Row label="Version" value={`v${detail.version}`} />
-      <Row label="Maturity" value={detail.maturity} />
-      {detail.license && <Row label="License" value={detail.license} />}
+      <Row label={<T k="detail.version" />} value={`v${detail.version}`} />
+      <Row label={<T k="detail.maturity" />} value={<T k={`maturity.${detail.maturity}`} />} />
+      {detail.license && <Row label={<T k="detail.license" />} value={detail.license} />}
       {detail.author && (
         <Row
-          label="Author"
+          label={<T k="detail.author" />}
           value={
             detail.author.github ? (
               <a
@@ -112,7 +115,7 @@ function SidebarMeta({ detail }: { detail: ReturnType<typeof getSkillDetail> }) 
       )}
       {detail.homepage && (
         <Row
-          label="Homepage"
+          label={<T k="detail.homepage" />}
           value={
             <a
               href={detail.homepage}
@@ -127,7 +130,7 @@ function SidebarMeta({ detail }: { detail: ReturnType<typeof getSkillDetail> }) 
       )}
       {detail.links?.repo && (
         <Row
-          label="Repo"
+          label={<T k="detail.repo" />}
           value={
             <a
               href={detail.links.repo}
@@ -142,7 +145,7 @@ function SidebarMeta({ detail }: { detail: ReturnType<typeof getSkillDetail> }) 
       )}
       {detail.links?.issues && (
         <Row
-          label="Issues"
+          label={<T k="detail.issues" />}
           value={
             <a
               href={detail.links.issues}
@@ -150,12 +153,12 @@ function SidebarMeta({ detail }: { detail: ReturnType<typeof getSkillDetail> }) 
               rel="noreferrer"
               className="text-[var(--color-accent)] hover:underline"
             >
-              Tracker
+              <T k="detail.tracker" />
             </a>
           }
         />
       )}
-      <Row label="Size" value={`${(detail.size / 1024).toFixed(1)} KB`} />
+      <Row label={<T k="detail.size" />} value={`${(detail.size / 1024).toFixed(1)} KB`} />
       <Row
         label="sha256"
         value={<code className="text-[10px] break-all">{detail.sha256}</code>}
@@ -164,7 +167,7 @@ function SidebarMeta({ detail }: { detail: ReturnType<typeof getSkillDetail> }) 
   );
 }
 
-function Row({ label, value }: { label: string; value: React.ReactNode }) {
+function Row({ label, value }: { label: React.ReactNode; value: React.ReactNode }) {
   return (
     <div className="flex items-start justify-between gap-3">
       <span className="text-[var(--color-muted)]">{label}</span>

@@ -23,6 +23,15 @@ export const mirahubSchema = {
       default: 'experimental',
     },
     license: { type: 'string' },
+    description: {
+      type: 'object',
+      additionalProperties: false,
+      minProperties: 1,
+      properties: {
+        en: { type: 'string', minLength: 1 },
+        zh: { type: 'string', minLength: 1 },
+      },
+    },
     author: {
       type: 'object',
       additionalProperties: false,

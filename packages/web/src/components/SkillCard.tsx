@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { SkillSummary } from '@/lib/types';
 import { TagChip } from './TagChip';
+import { L, T } from './T';
 
 export function SkillCard({ skill }: { skill: SkillSummary }) {
   const primaryTags = skill.tags.slice(0, 4);
@@ -14,7 +15,7 @@ export function SkillCard({ skill }: { skill: SkillSummary }) {
         <MaturityChip maturity={skill.maturity} />
       </div>
       <p className="text-sm text-[var(--color-muted)] line-clamp-3 mb-3 min-h-[3.5rem]">
-        {skill.description}
+        <L text={skill.descriptions} />
       </p>
       <div className="flex flex-wrap gap-1.5 mt-auto">
         {primaryTags.map((t) => (
@@ -22,7 +23,7 @@ export function SkillCard({ skill }: { skill: SkillSummary }) {
         ))}
       </div>
       <div className="mt-3 flex items-center justify-between text-xs text-[var(--color-muted)]">
-        <span>{skill.author?.name ?? 'unknown author'}</span>
+        <span>{skill.author?.name ?? <T k="card.unknownAuthor" />}</span>
         <span>v{skill.version}</span>
       </div>
     </Link>
@@ -38,7 +39,7 @@ function MaturityChip({ maturity }: { maturity: SkillSummary['maturity'] }) {
       : 'bg-zinc-500/15 text-zinc-700 dark:text-zinc-300';
   return (
     <span className={`text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded ${tone}`}>
-      {maturity}
+      <T k={`maturity.${maturity}`} />
     </span>
   );
 }

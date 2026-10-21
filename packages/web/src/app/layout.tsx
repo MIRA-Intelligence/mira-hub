@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { LANG_BOOT_SCRIPT } from '@/lib/i18n';
+import { T } from '@/components/T';
+import { LangToggle } from '@/components/LangToggle';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -10,7 +13,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    // The boot script sets lang/data-lang before hydration.
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: LANG_BOOT_SCRIPT }} />
+      </head>
       <body className="min-h-dvh flex flex-col antialiased">
         <SiteHeader />
         <main className="flex-1">{children}</main>
@@ -29,7 +36,7 @@ function SiteHeader() {
         </Link>
         <nav className="flex items-center gap-5 text-sm">
           <Link href="/skills" className="hover:text-[var(--color-accent)]">
-            Skills
+            <T k="nav.skills" />
           </Link>
           <a
             href="https://github.com/MIRA-Intelligence/mira-skills"
@@ -37,7 +44,7 @@ function SiteHeader() {
             rel="noreferrer"
             className="hover:text-[var(--color-accent)]"
           >
-            Contribute
+            <T k="nav.contribute" />
           </a>
           <a
             href="https://github.com/MIRA-Intelligence/mira"
@@ -47,6 +54,7 @@ function SiteHeader() {
           >
             GitHub
           </a>
+          <LangToggle />
         </nav>
       </div>
     </header>
@@ -58,11 +66,11 @@ function SiteFooter() {
     <footer className="border-t border-[var(--color-border)] py-8 text-sm text-[var(--color-muted)]">
       <div className="mx-auto max-w-6xl px-5 flex flex-wrap justify-between gap-4">
         <div>
-          MIRA Hub · skills for medical & scientific research.
+          <T k="footer.tagline" />
         </div>
         <div className="flex gap-4">
           <a href="https://mira-intelligence.github.io" className="hover:text-[var(--color-accent)]">
-            Docs
+            <T k="footer.docs" />
           </a>
           <a
             href="https://github.com/MIRA-Intelligence/mira-skills"

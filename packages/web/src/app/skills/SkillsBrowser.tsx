@@ -4,7 +4,13 @@ import { useEffect, useMemo, useState } from 'react';
 import FlexSearch from 'flexsearch';
 import type { Facet, SkillSummary, Taxonomy } from '@/lib/types';
 import { splitTag } from '@/lib/tags';
+import { t } from '@/lib/i18n';
+import { useLang } from '@/lib/useLang';
 import { SkillCard } from '@/components/SkillCard';
+import { L, T } from '@/components/T';
+
+// FlexSearch tokenizes on whitespace, which Chinese doesn't have.
+const CJK_RE = /[㐀-鿿豈-﫿]/;
 
 type Selected = Record<string, Set<string>>;
 
@@ -15,6 +21,7 @@ export function SkillsBrowser({
   skills: SkillSummary[];
   taxonomy: Taxonomy;
 }) {
+  const lang = useLang();
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Selected>(() => initSelected(taxonomy));
 
@@ -38,7 +45,7 @@ export function SkillsBrowser({
       tokenize: 'forward',
       document: {
         id: 'slug',
-        index: ['name', 'description', 'tags'],
+        index: ['name', 'descriptions:en', 'tags'],
       },
     });
     for (const s of skills) idx.add(s);
@@ -56,6 +63,12 @@ export function SkillsBrowser({
       const matched = new Set<string>();
       for (const group of hits) {
         for (const id of group.result) matched.add(String(id));
+      }
+      if (CJK_RE.test(q)) {
+        const needle = q.toLowerCase();
+        for (const s of skills) {
+          if (s.descriptions.zh.toLowerCase().includes(needle)) matched.add(s.slug);
+        }
       }
       pool = pool.filter((s) => matched.has(s.slug));
     }
@@ -75,16 +88,23 @@ export function SkillsBrowser({
   return (
     <div className="mx-auto max-w-6xl px-5 py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Skills</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          <T k="skills.title" />
+        </h1>
         <p className="text-sm text-[var(--color-muted)]">
-          {filtered.length} of {skills.length} skill{skills.length === 1 ? '' : 's'}
+          <L
+            text={{
+              en: `${filtered.length} of ${skills.length} skill${skills.length === 1 ? '' : 's'}`,
+              zh: `共 ${skills.length} 个技能，显示 ${filtered.length} 个`,
+            }}
+          />
         </p>
       </div>
       <div className="mb-5">
         <input
           type="search"
           value={query}
-          placeholder="Search skills, tags, descriptions…"
+          placeholder={t(lang, 'skills.searchPlaceholder')}
           onChange={(e) => setQuery(e.target.value)}
           className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-card)] px-4 py-2.5 text-sm outline-none focus:border-[var(--color-accent)]"
         />
@@ -114,7 +134,7 @@ export function SkillsBrowser({
         <div>
           {filtered.length === 0 ? (
             <div className="rounded-xl border border-dashed border-[var(--color-border)] p-10 text-center text-[var(--color-muted)]">
-              No skills match your filters.
+              <T k="skills.noMatch" />
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -141,7 +161,7 @@ function FacetGroup({
   return (
     <div>
       <h3 className="text-xs uppercase tracking-wider text-[var(--color-muted)] mb-2">
-        {facet.label.en}
+        <L text={facet.label} />
       </h3>
       <div className="space-y-1.5">
         {facet.values.map((v) => (
@@ -155,7 +175,9 @@ function FacetGroup({
               checked={selected.has(v.id)}
               onChange={() => onToggle(v.id)}
             />
-            <span>{v.label.en}</span>
+            <span>
+              <L text={v.label} />
+            </span>
           </label>
         ))}
       </div>

@@ -41,6 +41,12 @@ Third-party skills are mirrored from their upstream repos (pinned commits in
 `mira-skills/upstream.yaml`) with `npm run vendor:upstream`; see the
 mira-skills README.
 
+The site is bilingual (English / 中文). UI strings live in
+`packages/web/src/lib/i18n.ts`; pages render both languages and CSS shows the
+one set on `<html data-lang>` (chosen by `?lang=`, the saved toggle, or the
+browser language). Skill abstracts come from the registry's `descriptions`,
+and `check` fails if a skill lacks either language.
+
 ## Production build
 
 ```bash

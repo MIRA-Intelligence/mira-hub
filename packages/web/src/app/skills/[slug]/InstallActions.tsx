@@ -2,6 +2,8 @@
 
 import { useRef, useState } from 'react';
 import type { SkillDetail } from '@/lib/types';
+import { useLang } from '@/lib/useLang';
+import { T } from '@/components/T';
 
 type CopyState = 'idle' | 'copied' | 'manual';
 type DesktopState = 'idle' | 'launching' | 'opened' | 'missing';
@@ -13,7 +15,11 @@ export function InstallActions({ detail }: { detail: SkillDetail }) {
   const [copyState, setCopyState] = useState<CopyState>('idle');
   const [desktopState, setDesktopState] = useState<DesktopState>('idle');
   const manualRef = useRef<HTMLTextAreaElement | null>(null);
-  const installPrompt = `Install the "${detail.slug}" skill v${detail.version} from MIRA Hub (${detail.zipAbsoluteUrl}).`;
+  const lang = useLang();
+  const installPrompt =
+    lang === 'zh'
+      ? `从 MIRA Hub 安装技能“${detail.slug}” v${detail.version}（${detail.zipAbsoluteUrl}）。`
+      : `Install the "${detail.slug}" skill v${detail.version} from MIRA Hub (${detail.zipAbsoluteUrl}).`;
 
   const handleInstallDesktop = () => {
     setDesktopState('launching');
@@ -48,25 +54,25 @@ export function InstallActions({ detail }: { detail: SkillDetail }) {
         disabled={desktopState === 'launching'}
         className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-md bg-[var(--color-accent)] text-[var(--color-accent-fg)] text-sm font-medium hover:opacity-90 disabled:opacity-70"
       >
-        {desktopState === 'launching' ? 'Opening MIRA Desktop…' : 'Install in MIRA Desktop'}
+        <T k={desktopState === 'launching' ? 'install.opening' : 'install.desktop'} />
       </button>
 
       {desktopState === 'missing' && (
         <div className="rounded-md border border-amber-500/30 bg-amber-500/10 p-2.5 text-[11px] leading-snug text-amber-700 dark:text-amber-200 space-y-1">
-          <p className="font-medium">MIRA Desktop didn&apos;t respond.</p>
+          <p className="font-medium">
+            <T k="install.missingTitle" />
+          </p>
           <p>
-            Either it isn&apos;t installed yet —{' '}
+            <T k="install.missingBefore" />
             <a
               href={DESKTOP_RELEASES_URL}
               target="_blank"
               rel="noreferrer"
               className="underline hover:opacity-80"
             >
-              download the latest build
-            </a>{' '}
-            — or it&apos;s installed but has never been launched, so the system
-            hasn&apos;t registered the <code>mira://</code> handler yet. Open it
-            once and try again, or just use the .zip below.
+              <T k="install.missingLink" />
+            </a>
+            <T k="install.missingAfter" />
           </p>
         </div>
       )}
@@ -76,18 +82,22 @@ export function InstallActions({ detail }: { detail: SkillDetail }) {
         download
         className="flex items-center justify-center w-full px-3 py-2 rounded-md border border-[var(--color-border)] text-sm font-medium hover:border-[var(--color-accent)]"
       >
-        Download .zip
+        <T k="install.download" />
       </a>
       <button
         type="button"
         onClick={handleCopy}
         className="flex items-center justify-center w-full px-3 py-2 rounded-md border border-dashed border-[var(--color-border)] text-xs text-[var(--color-muted)] hover:text-[var(--color-accent)] hover:border-[var(--color-accent)]"
       >
-        {copyState === 'copied'
-          ? 'Copied!'
-          : copyState === 'manual'
-            ? 'Select & copy below'
-            : 'Copy install prompt'}
+        <T
+          k={
+            copyState === 'copied'
+              ? 'install.copied'
+              : copyState === 'manual'
+                ? 'install.manual'
+                : 'install.copy'
+          }
+        />
       </button>
       {copyState === 'manual' && (
         <textarea
@@ -100,9 +110,7 @@ export function InstallActions({ detail }: { detail: SkillDetail }) {
         />
       )}
       <p className="text-[11px] text-[var(--color-muted)] leading-snug">
-        The desktop button opens MIRA via the <code>mira://</code> deep link.
-        If MIRA isn&apos;t installed, use the .zip and import it from{' '}
-        <em>Settings → Skills &amp; Plugins</em>.
+        <T k="install.help" />
       </p>
     </div>
   );

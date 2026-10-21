@@ -20,8 +20,12 @@ const validateMirahub = ajv.compile(mirahubSchema);
  * @property {object} skill            parsed SKILL.md frontmatter
  * @property {string} markdown         SKILL.md body (no frontmatter)
  * @property {string} description      skill.description (from frontmatter)
+ * @property {{en:string, zh:string}} descriptions  hub abstract per site language
  * @property {string[]} files          relative file list inside the folder, sorted
  */
+
+/** Site languages every skill needs an abstract in. */
+export const LANGS = /** @type {const} */ (['en', 'zh']);
 
 /**
  * Walk the skills root and load every <slug>/ entry. Throws aggregated errors
@@ -122,6 +126,7 @@ async function loadOne(dir, slug) {
     if (!fs.existsSync(p)) throw new Error(`screenshot not found: ${shot}`);
   }
 
+  const descriptions = resolveDescriptions(skill.description, mirahub.description);
   const files = await listFiles(dir);
 
   return {
@@ -131,8 +136,42 @@ async function loadOne(dir, slug) {
     skill,
     markdown: parsed.content,
     description: skill.description,
+    descriptions,
     files,
   };
+}
+
+/**
+ * The SKILL.md description stands in for the language it's written in; every
+ * other site language must come from mirahub.yaml `description`.
+ *
+ * @param {string} skillDescription
+ * @param {{en?:string, zh?:string}|undefined} overrides
+ * @returns {{en:string, zh:string}}
+ */
+function resolveDescriptions(skillDescription, overrides = {}) {
+  const own = skillDescription.trim();
+  const ownLang = isMostlyCjk(own) ? 'zh' : 'en';
+  /** @type {Record<string, string>} */
+  const out = {};
+  for (const lang of LANGS) {
+    const text = overrides[lang]?.trim() ?? (lang === ownLang ? own : undefined);
+    if (!text) {
+      throw new Error(
+        `no ${lang} description: SKILL.md's is ${ownLang}, so set mirahub.yaml \`description.${lang}\``,
+      );
+    }
+    out[lang] = text;
+  }
+  return /** @type {{en:string, zh:string}} */ (out);
+}
+
+/** True when CJK characters make up most of the letters (mixed-in trigger words don't count). */
+function isMostlyCjk(text) {
+  const cjk = text.match(/[㐀-鿿豈-﫿]/g)?.length ?? 0;
+  const latin = text.match(/[A-Za-z]/g)?.length ?? 0;
+  // One CJK char carries roughly a word's worth of meaning, ~4 Latin letters.
+  return cjk * 4 > latin;
 }
 
 /** Recursively list files inside a directory, sorted, excluding hidden files. */

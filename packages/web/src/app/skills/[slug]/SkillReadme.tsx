@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { L, T } from '@/components/T';
 
 const COLLAPSED_MAX_PX = 440;
 const HEADING_RE = /^##\s+(.+?)\s*$/gm;
@@ -18,13 +19,24 @@ export function SkillReadme({ markdown }: { markdown: string }) {
       <header className="px-5 py-4 border-b border-[var(--color-border)]">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-sm font-semibold tracking-tight">Instructions</h2>
+            <h2 className="text-sm font-semibold tracking-tight">
+              <T k="readme.title" />
+            </h2>
             <p className="text-xs text-[var(--color-muted)] mt-0.5">
-              How the agent uses this skill — sourced from <code>SKILL.md</code>.
+              <T k="readme.subtitle" />
             </p>
           </div>
           <span className="text-[10px] uppercase tracking-wider text-[var(--color-muted)] shrink-0">
-            {sections.length > 0 ? `${sections.length} sections` : 'Markdown'}
+            {sections.length > 0 ? (
+              <L
+                text={{
+                  en: `${sections.length} sections`,
+                  zh: `${sections.length} 个章节`,
+                }}
+              />
+            ) : (
+              'Markdown'
+            )}
           </span>
         </div>
         {sections.length > 0 && (
@@ -62,7 +74,7 @@ export function SkillReadme({ markdown }: { markdown: string }) {
           onClick={() => setExpanded((v) => !v)}
           className="w-full py-2.5 text-sm font-medium text-[var(--color-accent)] hover:bg-[var(--color-chip-bg)] transition border-t border-[var(--color-border)] flex items-center justify-center gap-1.5"
         >
-          {expanded ? 'Collapse' : 'Show full instructions'}
+          <T k={expanded ? 'readme.collapse' : 'readme.expand'} />
           <Chevron up={expanded} />
         </button>
       )}

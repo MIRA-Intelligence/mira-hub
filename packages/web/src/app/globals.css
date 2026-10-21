@@ -35,6 +35,12 @@ a {
   color: inherit;
 }
 
+/* Bilingual text (components/T.tsx): show only the language set on <html>. */
+html:not([data-lang="zh"]) [data-lang-only="zh"],
+html[data-lang="zh"] [data-lang-only="en"] {
+  display: none;
+}
+
 .prose-mirahub h1 { font-size: 1.5rem; font-weight: 700; margin: 1.5rem 0 .75rem; }
 .prose-mirahub h2 { font-size: 1.25rem; font-weight: 600; margin: 1.25rem 0 .5rem; }
 .prose-mirahub h3 { font-size: 1.1rem;  font-weight: 600; margin: 1rem 0 .5rem; }

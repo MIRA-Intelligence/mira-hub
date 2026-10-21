@@ -16,7 +16,8 @@ import YAML from 'yaml';
  *             strip_sections?: [SKILL.md heading text to drop] }
  *   skills:
  *     - { slug, source, path, license?, maturity?, tags: [...],
- *         exclude?: [paths relative to the skill folder] }
+ *         exclude?: [paths relative to the skill folder],
+ *         description?: { en?, zh? } }   hub abstract in the language(s) upstream lacks
  *
  * A vendored folder is fully owned by the manifest: it is deleted and
  * re-copied on every run, so local edits must go upstream or into the
@@ -135,6 +136,7 @@ async function vendorOne({ skillsDir, repoDir, src, entry }) {
     version: semver(fm.version ?? fm.metadata?.version),
     maturity: entry.maturity ?? 'beta',
     license: entry.license ?? src.license,
+    ...(entry.description ? { description: entry.description } : {}),
     author: src.author,
     links: {
       repo: `${repoUrl}/tree/${src.ref}/${entry.path.split('/').map(encodeURIComponent).join('/')}`,
