@@ -48,18 +48,22 @@ The `cloud` job runs only when the repo has these settings:
 | var | `HUB_DEPLOY_USER` | `ubuntu` |
 | var | `HUB_DEPLOY_KNOWN_HOSTS` | `ssh-keyscan -t ed25519 43.133.90.127` output |
 
-The key's `authorized_keys` line on the server pins it to rsync into the site
-folder and nothing else:
+The key's `authorized_keys` line on the server pins it to rsync under
+`/opt/mira-hub` and nothing else; CI uploads to `site/` inside it. **The
+`command="…rrsync…"` prefix is required.** Without it the key is a full login,
+and an rsync with `--delete` to a relative path lands in the home directory.
+CI refuses to upload unless `site/index.html` already exists at the
+destination, but keep the pin anyway:
 
 ```text
-command="/usr/bin/rrsync /opt/mira-hub/site",restrict ssh-ed25519 AAAA… github-actions-deploy@mira-hub
+command="/usr/bin/rrsync /opt/mira-hub",restrict ssh-ed25519 AAAA… github-actions-deploy@mira-hub
 ```
 
 Setup, from a machine with SSH access to the CVM:
 
 ```bash
 ssh-keygen -t ed25519 -N '' -C github-actions-deploy@mira-hub -f ./hub_deploy
-ssh mira-cvm "echo 'command=\"/usr/bin/rrsync /opt/mira-hub/site\",restrict $(cat hub_deploy.pub)' >> ~/.ssh/authorized_keys"
+ssh mira-cvm "echo 'command=\"/usr/bin/rrsync /opt/mira-hub\",restrict $(cat hub_deploy.pub)' >> ~/.ssh/authorized_keys"
 gh secret set HUB_DEPLOY_KEY --repo MIRA-Intelligence/mira-hub < hub_deploy
 gh variable set HUB_DEPLOY_HOST --repo MIRA-Intelligence/mira-hub --body 43.133.90.127
 gh variable set HUB_DEPLOY_USER --repo MIRA-Intelligence/mira-hub --body ubuntu

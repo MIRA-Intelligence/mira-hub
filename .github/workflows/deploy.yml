@@ -123,16 +123,24 @@ jobs:
           printf '%s\n' "${{ secrets.HUB_DEPLOY_KEY }}" > ~/.ssh/id_deploy
           printf '%s\n' "${{ vars.HUB_DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
 
-      # The key is pinned server-side to `rrsync /opt/mira-hub/site`, so the
-      # destination is relative to that folder. --delay-updates swaps files in
-      # at the end; nginx serves the new build without a reload.
+      # The key is pinned server-side to `rrsync /opt/mira-hub`, so `site/` is
+      # /opt/mira-hub/site. Never sync to the login directory: with --delete,
+      # a key that lacks the rrsync pin would wipe the user's home (including
+      # ~/.ssh/authorized_keys). As a second guard the upload only runs when
+      # `site/index.html` already exists at the destination.
+      # --delay-updates swaps files in at the end; nginx needs no reload.
       - name: Upload site
         working-directory: mira-hub
+        env:
+          DEST: ${{ vars.HUB_DEPLOY_USER }}@${{ vars.HUB_DEPLOY_HOST }}:site/
         run: |
-          rsync -rltz --delete --delay-updates \
-            -e "ssh -i $HOME/.ssh/id_deploy -o IdentitiesOnly=yes" \
-            packages/web/out/ \
-            "${{ vars.HUB_DEPLOY_USER }}@${{ vars.HUB_DEPLOY_HOST }}:"
+          export RSYNC_RSH="ssh -i $HOME/.ssh/id_deploy -o IdentitiesOnly=yes"
+          if ! rsync --list-only "${DEST}index.html" >/dev/null; then
+            echo "::error::${DEST}index.html not found; refusing to sync (is the key pinned to rrsync /opt/mira-hub?)"
+            exit 1
+          fi
+          test -f packages/web/out/index.html
+          rsync -rltz --delete --delay-updates packages/web/out/ "$DEST"
 
       - name: Clean up SSH key
         if: always()
