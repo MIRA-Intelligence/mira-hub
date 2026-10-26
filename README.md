@@ -1,6 +1,7 @@
 # mira-hub
 
 Builder + static Next.js site that publishes the MIRA skill registry to
+<https://hub.mira-intelligence.com/> and
 <https://mira-intelligence.github.io/mira-hub/>.
 
 The actual skill payloads live in
@@ -54,5 +55,6 @@ npm run build
 # Static site at packages/web/out, registry zips at packages/web/public/registry
 ```
 
-GitHub Actions runs the same steps and pushes `packages/web/out` to the
-`gh-pages` branch.
+GitHub Actions runs the same steps twice: once for GitHub Pages (base path
+`/mira-hub`) and once for `hub.mira-intelligence.com` (base path `/`, rsynced
+to the Tencent Cloud server). See [`deploy/README.md`](deploy/README.md).
