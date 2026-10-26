@@ -18,6 +18,27 @@ export function L({ text }: { text: Localized }) {
   );
 }
 
+/** One <a> per language (CSS shows the active one), for links whose target depends on it. */
+export function LocalizedLink({
+  href,
+  className,
+  children,
+}: {
+  href: Localized;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      {LANGS.map((lang) => (
+        <a key={lang} href={href[lang]} data-lang-only={lang} className={className}>
+          {children}
+        </a>
+      ))}
+    </>
+  );
+}
+
 /** <L> for a UI string from the message table. */
 export function T({ k }: { k: MessageKey }) {
   return <L text={messages[k]} />;

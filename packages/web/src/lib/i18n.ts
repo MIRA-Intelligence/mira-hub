@@ -1,7 +1,7 @@
 export type Lang = 'en' | 'zh';
 
 export const LANGS: Lang[] = ['en', 'zh'];
-export const DEFAULT_LANG: Lang = 'en';
+export const DEFAULT_LANG: Lang = 'zh';
 export const LANG_STORAGE_KEY = 'mirahub.lang';
 
 /** Attribute on <html> holding the active language; CSS hides the other one. */
@@ -11,18 +11,25 @@ export type Localized = Record<Lang, string>;
 
 /**
  * Runs before first paint (inlined in <head>) so a static page never flashes
- * the wrong language: `?lang=` wins, then the saved choice, then the browser.
+ * the wrong language: `?lang=` wins, then the saved choice, then Chinese.
  */
 export const LANG_BOOT_SCRIPT = `(function(){try{
 var q=new URLSearchParams(location.search).get('lang');
 var s=localStorage.getItem('${LANG_STORAGE_KEY}');
-var l=q==='zh'||q==='en'?q:s==='zh'||s==='en'?s:(navigator.language||'').toLowerCase().indexOf('zh')===0?'zh':'en';
+var l=q==='zh'||q==='en'?q:s==='zh'||s==='en'?s:'${DEFAULT_LANG}';
 if(q===l)localStorage.setItem('${LANG_STORAGE_KEY}',l);
 document.documentElement.setAttribute('${LANG_ATTR}',l);
 document.documentElement.lang=l==='zh'?'zh-CN':'en';
 }catch(e){}})();`;
 
+/** MIRA docs home page for each language. */
+export const DOCS_HOME: Localized = {
+  en: 'https://mira-intelligence.com/en/',
+  zh: 'https://mira-intelligence.com/',
+};
+
 export const messages = {
+  'nav.docsHome': { en: 'MIRA Docs', zh: 'MIRA 文档' },
   'nav.skills': { en: 'Skills', zh: '技能' },
   'nav.contribute': { en: 'Contribute', zh: '贡献' },
   'footer.tagline': {
@@ -30,6 +37,11 @@ export const messages = {
     zh: 'MIRA Hub · 面向医学与科研的技能。',
   },
   'footer.docs': { en: 'Docs', zh: '文档' },
+
+  'theme.label': { en: 'Color mode', zh: '颜色模式' },
+  'theme.light': { en: 'light', zh: '浅色' },
+  'theme.dark': { en: 'dark', zh: '深色' },
+  'theme.system': { en: 'system', zh: '跟随系统' },
 
   'home.published': { en: 'skills published', zh: '个技能已发布' },
   'home.heroTitle': { en: 'Skills for medical & scientific research, ', zh: '医学与科研技能，' },

@@ -4,7 +4,7 @@ import { useSyncExternalStore } from 'react';
 import { DEFAULT_LANG, LANG_ATTR, LANG_STORAGE_KEY, type Lang } from './i18n';
 
 function read(): Lang {
-  return document.documentElement.getAttribute(LANG_ATTR) === 'zh' ? 'zh' : 'en';
+  return document.documentElement.getAttribute(LANG_ATTR) === 'en' ? 'en' : 'zh';
 }
 
 function subscribe(onChange: () => void) {
